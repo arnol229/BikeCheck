@@ -1,4 +1,4 @@
-### Bike Check
+##### Bike Check
 Internal Hackathon project for Recording bike status and usage.
 
 Front end application hosted on a Raspberry pi
@@ -8,7 +8,7 @@ Front end application hosted on a Raspberry pi
 ![User Flows](./user_flows.png)
 
 
-Docs/Tutorials
+####Docs/Tutorials
 
 ## Azure Cognitive Services
 https://docs.microsoft.com/en-us/azure/cognitive-services/
