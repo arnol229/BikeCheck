@@ -1,10 +1,14 @@
 ##### Bike Check
-Internal Hackathon project for Recording bike status and usage.
+Internal Hackathon project for Recording bike status and usage through a mfa service focusing on biometrics.
 
-Front end application hosted on a Raspberry pi
+Built with a Raspberry pi and the Microsoft Azure platform
 
+
+#### Architecture overview
 ![Architecture](./bikecheck_v1.png)
 
+
+#### User Flows
 ![User Flows](./user_flows.png)
 
 
