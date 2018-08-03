@@ -1,0 +1,8 @@
+cognitive_face
+scipy
+Flask
+flask_restful
+requests
+opencv-python
+numpy
+pillow

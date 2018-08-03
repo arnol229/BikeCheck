@@ -1,0 +1,4 @@
+.env
+docker-compose.yml
+face_recognition/Dockerfile
+face_recognition/app.py
