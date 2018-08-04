@@ -3,34 +3,33 @@ from guizero import App, Text, TextBox, PushButton, Slider, Picture
 class WelcomeView:
     view_name = 'welcome_view'
 
-    def __init__(self, nav):
-        self.nav = nav
-        self.header_text = Text(self.nav.app, text="Welcome to BikeCheck", size=40, font="Times New Roman", color="lightblue", grid=[])
-        self.button = PushButton(self.nav.app, command=self.on_face_recognition, text="Enter")
+    def __init__(self, core):
+        self.core = core
+        self.header_text = Text(self.core.app, text="Welcome to BikeCheck", size=40, font="Times New Roman", color="lightblue", grid=[])
+        self.button = PushButton(self.core.app, command=self.on_face_recognition, text="Enter")
 
     def on_face_recognition(self):
         self.button.disable()
-        self.nav.app.repeat(500, self.on_exit_view)
+        self.core.app.repeat(500, self.on_exit_view)
 
     def on_exit_view(self):
         face_recognized = True
         if face_recognized is True:
-            self.nav.app.cancel(self.on_exit_view)
-            self.nav.go_to_view('pin_view')
+            self.core.app.cancel(self.on_exit_view)
+            self.core.nav.go_to_view('pin')
         elif face_recognized is False:
-            self.nav.app.cancel(self.on_exit_view)
-            self.nav.go_to_view('cant_recognize_view')
+            self.core.app.cancel(self.on_exit_view)
+            self.core.nav.go_to_view('cant_recognize')
 
 class PinView:
     view_name = 'pin_view'
 
-    def __init__(self, nav):
-        self.nav = nav
-        self.header_text = Text(self.nav.app, text="Welcome PERSON", size=40, font="Times New Roman", color="lightblue", grid=[])
-        self.pin_text = Text(self.nav.app, text="Enter your PIN to validate", size=30, font="Times New Roman", color="lightblue", grid=[])
-        self.pin_input = TextBox(self.nav.app, command=self.check_pin)
-        self.pin_error = Text(self.nav.app, text="", visible=False, color="red")
-        
+    def __init__(self, core):
+        self.core = core
+        self.header_text = Text(self.core.app, text="Welcome PERSON", size=40, font="Times New Roman", color="lightblue", grid=[])
+        self.pin_text = Text(self.core.app, text="Enter your PIN to validate", size=30, font="Times New Roman", color="lightblue", grid=[])
+        self.pin_input = TextBox(self.core.app, command=self.check_pin)
+        self.pin_error = Text(self.core.app, text="", visible=False, color="red")
     
     def check_pin(self, enteredKey):
         currentPinEntry = self.pin_input.value + enteredKey
@@ -45,45 +44,58 @@ class PinView:
 class CantRecognizeView:
     view_name = 'cant_recognize_view'
 
-    def __init__(self, nav):
-        self.nav = nav
-        self.header_text = Text(self.nav.app, text="Can't Recognize You!", size=40, font="Times New Roman", color="lightblue", grid=[])
+    def __init__(self, core):
+        self.core = core
+        self.header_text = Text(self.core.app, text="Can't Recognize You!", size=40, font="Times New Roman", color="lightblue", grid=[])
 
 class Navigation:
-    gui_classes = [Text, TextBox, PushButton, Slider, Picture]
-    def __init__(self, app, root_view, views):
-        self.app = app
-        self.back_button = PushButton(self.app, command=self.on_back, text="Back", enabled=False)
+    def __init__(self, core, views_config, root_view_name):
+        self.core = core
+        self.back_button = PushButton(self.core.app, command=self.on_back, text="Back", enabled=False)
         self.history = []
-        self.views = self.create_views(views)
-        self.current_view = root_view(self)
+        self.views = self.create_views(views_config)
+        self.root_view_config = self.get_view_config(root_view_name)
 
-    def create_views(self, views_list):
-        views = {}
-        for view in views_list:
-            views[view.view_name] = view
-        return views
+    def create_views(self, views_config):
+        result = []
+        for key, value in views_config.items():
+            result.append({'name': key, 'view': value})
+        return result
     
-    def get_view(self, view_name):
-        return self.views[view_name]
-
+    def get_view_config(self, view_name, default = None):
+        view_config = next(
+            (view for view in self.views if view['name'] == view_name), default
+            )
+        return view_config
+    
     def on_back(self):
         if (len(self.history) > 0):
-            last_view = self.history.pop()
-            self.update_current_view(self.views[last_view], True)
+            last_view_name = self.history.pop()
+            last_view = self.get_view_config(last_view_name, self.root_view_config)
+            self.core.update_current_view(last_view)
             if (len(self.history) == 0):
                 self.back_button.disable()
 
-    def go_to_view(self, next_view_key):
-        next_view = self.get_view(next_view_key)
-        self.update_current_view(next_view)
-
-    def update_current_view(self, next_view, isBack = False):
-        if isBack is False:
-            self.history.append(self.current_view.view_name)
-        self.destroy_current_view()
-        self.current_view = next_view(self)
+    def go_to_view(self, next_view_name):
+        next_view = self.get_view_config(next_view_name, self.root_view_config)
+        self.history.append(self.core.current_view_name)
+        self.core.update_current_view(next_view)
         self.back_button.enable()
+
+
+class Core:
+    gui_classes = [Text, TextBox, PushButton, Slider, Picture]
+    def __init__(self, app, root_view_name, views_config):
+        self.app = app
+        self.views_config = views_config
+        self.nav = Navigation(self, self.views_config, root_view_name)
+        self.current_view_name = self.nav.root_view_config['name']
+        self.current_view = self.nav.root_view_config['view'](self)
+
+    def update_current_view(self, view_config):
+        self.destroy_current_view()
+        self.current_view_name = view_config['name']
+        self.current_view = view_config['view'](self)
 
     def destroy_current_view(self):
         view_attrs = self.current_view.__dict__
@@ -94,14 +106,18 @@ class Navigation:
                     class_attr.destroy()
 
 class BikeCheckApp:
-    def __init__(self, app, views):
+    def __init__(self, app, views_config):
         self.app = app(title="BikeCheck")
-        self.nav = Navigation(app=self.app, root_view=WelcomeView, views=views)
+        self.core = Core(app=self.app, root_view_name='welcome', views_config=views_config)
 
     def start(self):
         self.app.display()
 
-views = [WelcomeView, PinView, CantRecognizeView]
-app = BikeCheckApp(App, views)
+views_config = {
+    'welcome': WelcomeView,
+    'pin': PinView,
+    'cant_recognize': CantRecognizeView
+}
+app = BikeCheckApp(App, views_config)
 app.start()
 
