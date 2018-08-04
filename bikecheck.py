@@ -5,8 +5,6 @@ class WelcomeView:
 
     def __init__(self, nav):
         self.nav = nav
-
-    def create(self):
         self.header_text = Text(self.nav.app, text="Welcome to BikeCheck", size=40, font="Times New Roman", color="lightblue", grid=[])
         self.button = PushButton(self.nav.app, command=self.on_face_recognition, text="Enter")
 
@@ -23,21 +21,16 @@ class WelcomeView:
             self.nav.app.cancel(self.on_exit_view)
             self.nav.go_to_view('cant_recognize_view')
 
-    def destroy(self):
-        self.header_text.destroy()
-        self.button.destroy()
-
 class PinView:
     view_name = 'pin_view'
 
     def __init__(self, nav):
         self.nav = nav
-    
-    def create(self):
         self.header_text = Text(self.nav.app, text="Welcome PERSON", size=40, font="Times New Roman", color="lightblue", grid=[])
         self.pin_text = Text(self.nav.app, text="Enter your PIN to validate", size=30, font="Times New Roman", color="lightblue", grid=[])
         self.pin_input = TextBox(self.nav.app, command=self.check_pin)
         self.pin_error = Text(self.nav.app, text="", visible=False, color="red")
+        
     
     def check_pin(self, enteredKey):
         currentPinEntry = self.pin_input.value + enteredKey
@@ -49,33 +42,21 @@ class PinView:
             self.pin_error.text = ""
             self.pin_error.visible = False
 
-    def destroy(self):
-        self.header_text.destroy()
-        self.pin_text.destroy()
-        self.pin_input.destroy()
-        self.pin_error.destroy()
-
 class CantRecognizeView:
     view_name = 'cant_recognize_view'
 
     def __init__(self, nav):
         self.nav = nav
-
-    def create(self):
         self.header_text = Text(self.nav.app, text="Can't Recognize You!", size=40, font="Times New Roman", color="lightblue", grid=[])
 
-    def destroy(self):
-        self.header_text.destroy()
-
-
 class Navigation:
+    gui_classes = [Text, TextBox, PushButton, Slider, Picture]
     def __init__(self, app, root_view, views):
         self.app = app
         self.back_button = PushButton(self.app, command=self.on_back, text="Back", enabled=False)
         self.history = []
         self.views = self.create_views(views)
         self.current_view = root_view(self)
-        self.current_view.create()
 
     def create_views(self, views_list):
         views = {}
@@ -100,10 +81,17 @@ class Navigation:
     def update_current_view(self, next_view, isBack = False):
         if isBack is False:
             self.history.append(self.current_view.view_name)
-        self.current_view.destroy()
+        self.destroy_current_view()
         self.current_view = next_view(self)
-        self.current_view.create()
         self.back_button.enable()
+
+    def destroy_current_view(self):
+        view_attrs = self.current_view.__dict__
+        for attr in view_attrs:
+            for g_class in self.gui_classes:
+                class_attr = getattr(self.current_view, attr)
+                if isinstance(class_attr, g_class):
+                    class_attr.destroy()
 
 class BikeCheckApp:
     def __init__(self, app, views):
