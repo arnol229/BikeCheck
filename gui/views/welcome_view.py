@@ -1,8 +1,8 @@
 class WelcomeView:
     def __init__(self, core):
         self.core = core
-        self.header_text = self.core.create('text', text="Welcome to BikeCheck", size=40, font="Times New Roman", color="lightblue", grid=[])
-        self.button = self.core.create('push_button', command=self.on_face_recognition, text="Enter")
+        self.header_text = self.core.create('text', self.core.app, text="Welcome to BikeCheck", size=40, font="Times New Roman", color="lightblue", grid=[])
+        self.button = self.core.create('push_button', self.core.app, command=self.on_face_recognition, text="Enter")
 
     def on_face_recognition(self):
         self.button.disable()

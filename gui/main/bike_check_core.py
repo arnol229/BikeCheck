@@ -1,8 +1,8 @@
-from guizero import Text, TextBox, PushButton, Slider, Picture
+from guizero import Text, TextBox, PushButton, Slider, Picture, Box
 from main.bike_check_navigation import BikeCheckNavigation
 
 class BikeCheckCore:
-    gui_classes = [Text, TextBox, PushButton, Slider, Picture]
+    gui_classes = [Text, TextBox, PushButton, Slider, Picture, Box]
     def __init__(self, app, views_config, root_view_name):
         self.app = app
         self.views_config = views_config
@@ -10,13 +10,15 @@ class BikeCheckCore:
         self.current_view_name = self.nav.root_view_config['name']
         self.current_view = self.nav.root_view_config['view'](self)
 
-    def create(self, element, *args, **kwargs):
+    def create(self, element, master, *args, **kwargs):
         if element == 'text':
-            return Text(self.app, *args, **kwargs)
+            return Text(master, *args, **kwargs)
         elif element == 'push_button':
-            return PushButton(self.app, *args, **kwargs)
+            return PushButton(master, *args, **kwargs)
         elif element == 'text_box':
-            return TextBox(self.app, *args, **kwargs)
+            return TextBox(master, *args, **kwargs)
+        elif element == 'box':
+            return Box(master, *args, **kwargs)
         else:
             return None
 
