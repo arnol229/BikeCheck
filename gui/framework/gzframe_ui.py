@@ -2,9 +2,12 @@
 from guizero import Text, TextBox, PushButton, Slider, Picture, Box
 
 class GZFrameUI:
+    gui_classes = [Text, TextBox, PushButton, Slider, Picture, Box]
+
     def __init__(self, gzframe):
         self.gzframe = gzframe
         self.container = Box(self.gzframe.app)
+        self.elements = []
 
     def render_box(self, container = None, *args, **kwargs):
         if container is None:

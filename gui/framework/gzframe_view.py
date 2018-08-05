@@ -6,4 +6,4 @@ class GZFrameView:
         self.ui = GZFrameUI(self.gzframe)
     
     def go_to_view(self, view):
-        self.gzframe.nav.go_to_view(view)
+        self.gzframe.core.go_to_view(view)

@@ -1,10 +1,11 @@
-from framework.gzframe_state import GZFrameState
+from guizero import App
 from framework.gzframe_core import GZFrameCore
-from framework.gzframe_navigation import GZFrameNavigation
 
 class GZFrame:
-    def __init__(self, app, views_config, root_view_name):
-        self.app = app
-        self.state = GZFrameState()
-        self.core = GZFrameCore(app=app)
-        self.nav = GZFrameNavigation(self, views_config, root_view_name)
+    def __init__(self, title, views_config, root_view_name, state=None):
+        self.app = App(title=title)
+        self.state = state
+        self.core = GZFrameCore(self, views_config, root_view_name)
+
+    def run(self):
+        self.app.display()
