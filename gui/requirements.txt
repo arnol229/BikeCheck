@@ -1,0 +1,2 @@
+guizero==0.5.3
+pydash==4.7.1
