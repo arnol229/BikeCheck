@@ -15,9 +15,8 @@ class GZFrameView:
         current_element.index = index
         if current_element.element_type == 'box':
             current_element.element = Box(parent, **current_element.element_props)
-            for child in current_element.children:
-
-                self.render(child, current_element.element)
+            for child_index, child in enumerate(current_element.children):
+                self.render(child, current_element.element, child_index)
         elif current_element.element_type == 'text':
             current_element.element = Text(parent, **current_element.element_props)
         elif current_element.element_type == 'button':
