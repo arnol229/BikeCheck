@@ -3,6 +3,7 @@ from controllers.welcome_ctrl import WelcomeCtrl
 from controllers.enter_pin_ctrl import EnterPinCtrl
 from controllers.no_recognition_ctrl import NoRecognitionCtrl
 from controllers.dashboard_ctrl import DashboardCtrl
+from controllers.maintenance_ctrl import MaintenanceCtrl
 
 class BikeCheckState:
     def __init__(self):
@@ -19,6 +20,7 @@ class BikeCheck:
             {'name': 'no_recognition', 'controller': NoRecognitionCtrl},
             {'name': 'enter_pin', 'controller': EnterPinCtrl},
             {'name': 'dashboard', 'controller': DashboardCtrl},
+            {'name': 'maintenance', 'controller': MaintenanceCtrl},
         ]
         self.app_config = {
             'title': 'Bike Check',

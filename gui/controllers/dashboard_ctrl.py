@@ -12,6 +12,9 @@ class DashboardCtrl(GZFrameController):
         self.state.is_authenticated = False
         self.go_to_route('welcome')
 
+    def to_maintenance(self):
+        self.go_to_route('maintenance')
+
     def render(self, state):
         def get_available_bikes():
             available_bikes = []
@@ -29,5 +32,6 @@ class DashboardCtrl(GZFrameController):
             GZFrameButton(element_name="logout_button", element_props={"text":"Log Out", "command": self.logout}),
             GZFrameText(element_name="header_text", element_props={"text":"Available Bikes", "size":30, "font":"Times New Roman", "color":"lightblue"}),
             GZFrameContainer(element_name="bike_list_group", children=get_available_bikes()),
-            GZFrameButton(element_name="checkout_button", element_props={"text":"Check Out"})
+            GZFrameButton(element_name="checkout_button", element_props={"text":"Check Out"}),
+            GZFrameButton(element_name="maintenance_button", element_props={"text":"Maintenance", "command": self.to_maintenance})
         ]
