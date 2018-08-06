@@ -1,8 +1,8 @@
 from framework.gzframe import GZFrame
-from views.welcome_view import WelcomeView
-from views.enter_pin_view import EnterPinView
-from views.no_recognition_view import NoRecognitionView
-from views.dashboard_view import DashboardView
+from controllers.welcome_ctrl import WelcomeCtrl
+from controllers.enter_pin_ctrl import EnterPinCtrl
+from controllers.no_recognition_ctrl import NoRecognitionCtrl
+from controllers.dashboard_ctrl import DashboardCtrl
 
 class BikeCheckState:
     def __init__(self):
@@ -14,18 +14,18 @@ class BikeCheckState:
 
 class BikeCheck:
     def __init__(self):
-        self.views_config = {
-            'welcome': WelcomeView,
-            'enter_pin': EnterPinView,
-            'no_recognition': NoRecognitionView,
-            'dashboard': DashboardView
-        }
+        self.routes = [
+            {'name': 'welcome', 'controller': WelcomeCtrl, 'is_root': True},
+            {'name': 'no_recognition', 'controller': NoRecognitionCtrl},
+            {'name': 'enter_pin', 'controller': EnterPinCtrl},
+            {'name': 'dashboard', 'controller': DashboardCtrl},
+        ]
         self.app_config = {
             'title': 'Bike Check',
             'width': 800,
             'height': 480
         }
-        self.bikecheck = GZFrame(app_config=self.app_config, views_config=self.views_config, root_view_name='welcome', state=BikeCheckState())
+        self.bikecheck = GZFrame(app_config=self.app_config, routes=self.routes, state=BikeCheckState())
 
 
 app = BikeCheck()

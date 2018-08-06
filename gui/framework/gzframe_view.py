@@ -1,19 +1,31 @@
-from framework.gzframe_ui import GZFrameUI
+
+from guizero import Text, PushButton, Box
+from framework.gzframe_element import GZFrameContainer
 
 class GZFrameView:
-    def __init__(self, gzframe):
+    gui_classes = [Text, PushButton, Box]
+
+    def __init__(self, gzframe, template):
         self.gzframe = gzframe
-        self.state = self.gzframe.state
-        self.ui = GZFrameUI(self.gzframe)
-    
-    def go_to_view(self, view):
-        self.gzframe.core.go_to_view(view)
+        self.elements = {}
+        self.template = GZFrameContainer(element_name='root', children=template)
+        self.render(self.template, parent=self.gzframe.app)
 
-    def on_back(self):
-        self.gzframe.core.on_back()
+    def render(self, current_element, parent, index = 0):
+        current_element.index = index
+        if current_element.element_type == 'box':
+            current_element.element = Box(parent, **current_element.element_props)
+            for child in current_element.children:
 
-    def reset_history(self):
-        self.gzframe.core.clear_history()
+                self.render(child, current_element.element)
+        elif current_element.element_type == 'text':
+            current_element.element = Text(parent, **current_element.element_props)
+        elif current_element.element_type == 'button':
+            current_element.element = PushButton(parent, **current_element.element_props)
+            if not (current_element.on_click is None):
+                current_element.element.when_clicked = current_element.on_click
+        
+        self.elements[current_element.element_name] = current_element
 
-    def is_history_empty(self):
-        return not self.gzframe.core.is_history_empty()
+    def element(self, name):
+        return getattr(self.elements[name], 'element')
