@@ -6,26 +6,26 @@ class GZFrameCore:
         self.gzframe = gzframe
         self.history = []
         self.routes = routes
-        self.root_route = self.get_root(routes)
+        self.root_route = self.get_root_route(routes)
         self.root_component = None
         self.current_route = None
         self.current_view = GZFrameRenderer(self.gzframe)
 
-    def get_root(self, routes):
-        root_controller = None
+    def get_root_route(self, routes):
+        root_route = None
         for route in routes:
             if 'is_root' in route:
                 if route['is_root'] is True:
-                    root_controller = route
+                    root_route = route
 
-        if not (root_controller is None):
+        if not (root_route is None):
             return routes[0]
         else:
-            return root_controller
+            return root_route
     
     def get_route(self, route_name):
         return next(
-            (ctrl for ctrl in self.routes if ctrl['name'] == route_name), self.root_route
+            (component for component in self.routes if component['name'] == route_name), self.root_route
         )
 
     def is_history_empty(self):
