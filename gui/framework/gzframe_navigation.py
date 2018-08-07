@@ -2,15 +2,14 @@ from framework.gzframe_renderer import GZFrameRenderer
 
 class GZFrameNavigation:
 
-    def __init__(self, app, routes, view, state):
+    def __init__(self, app, routes, view):
         self.app = app
-        self.state = state
         self.history = []
         self.routes = routes
         self.root_route = self.get_root_route(routes)
         self.current_route = self.root_route
-        self.root_component = self.update_root_component(self.root_route, {})
         self.current_view = view
+        self.update_current_component_tree(self.current_route)
 
     def get_root_route(self, routes):
         root_route = None
@@ -49,11 +48,13 @@ class GZFrameNavigation:
     def update_current_view(self, route, props={}):
         self.current_view.destroy()
         self.current_route = route
-        self.root_component = self.update_root_component(route, props=props)
-        self.current_view.render(self.root_component, self.app)
+        self.update_current_component_tree(self.current_route, props)
+        self.current_view.render(self.current_view.current_component_tree, self.app)
 
-    def update_root_component(self, route, props={}):
-        return self.current_route['component'](self.current_route['name'], element_props=props, state=self.state)
-
-    def without_keys(self, d, keys):
-        return {x: d[x] for x in d if x not in keys}
+    def update_current_component_tree(self, route, props={}):
+        self.current_view.update_root_options(
+            route['component'], route['name'], props
+        )
+        self.current_view.current_component_tree = self.current_view.create_component_tree(
+            route['component'], route['name'], props
+        )

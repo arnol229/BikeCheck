@@ -6,11 +6,11 @@ class EnterPinComponent(GZFrameComponent):
         super().__init__(element_name, state=state, element_props=element_props)
 
     def on_pin_entry(self, event_data):
-        numeric_key_group = self.gzframe.element('numeric_key_group')
-        validate_button = self.gzframe.element('validate_button')
-        clear_button = self.gzframe.element('clear_button')
-        pin_input = self.gzframe.element('pin_input')
-        pin_error = self.gzframe.element('pin_error')
+        numeric_key_group = self.gzframe.element_by_name('numeric_key_group')
+        validate_button = self.gzframe.element_by_name('validate_button')
+        clear_button = self.gzframe.element_by_name('clear_button')
+        pin_input = self.gzframe.element_by_name('pin_input')
+        pin_error = self.gzframe.element_by_name('pin_error')
         if (numeric_key_group.enabled == True):
             clear_button.enable()
             pin_error.visible = False
@@ -23,8 +23,8 @@ class EnterPinComponent(GZFrameComponent):
                 validate_button.enable()
     
     def validate_pin(self):
-        pin_input = self.gzframe.element('pin_input')
-        pin_error = self.gzframe.element('pin_error')
+        pin_input = self.gzframe.element_by_name('pin_input')
+        pin_error = self.gzframe.element_by_name('pin_error')
         if (pin_input.value != '1111'):
             pin_error.visible = True
             self.reset_form()
@@ -32,15 +32,18 @@ class EnterPinComponent(GZFrameComponent):
             self.state.is_authenticated = True
             self.go_to_route('dashboard')
 
+    def update_name(self):
+        self.gzframe.set_state({'name': 'Tom'})
+
     def clear_pin(self):
         self.reset_form()
-        self.gzframe.element('pin_error').visible = False
+        self.gzframe.element_by_name('pin_error').visible = False
 
     def reset_form(self):
-        self.gzframe.element('pin_input').value = ""
-        self.gzframe.element('validate_button').disable()
-        self.gzframe.element('clear_button').disable()
-        self.gzframe.element('numeric_key_group').enable()
+        self.gzframe.element_by_name('pin_input').value = ""
+        self.gzframe.element_by_name('validate_button').disable()
+        self.gzframe.element_by_name('clear_button').disable()
+        self.gzframe.element_by_name('numeric_key_group').enable()
 
     def render(self, props, state):
         welcome_message = "Welcome {name}".format(name=state.name)
@@ -55,6 +58,7 @@ class EnterPinComponent(GZFrameComponent):
             )
 
         return [
+            GZFrameButton(element_name='update_name', element_props={'command': self.update_name, 'text': 'Update Name'}),
             GZFrameContainer(element_name='app_controls_group', children=[
                 GZFrameButton(element_name='back_button', element_props={'command': self.on_back, 'text': 'Back'}),
             ]),

@@ -9,16 +9,16 @@ class WelcomeComponent(GZFrameComponent):
         self.reset_history()
 
     def recognize_face(self):
-        self.gzframe.element('enter_button').disable()
-        self.gzframe.element('welcome').repeat(500, self.on_face_recognition)
+        self.gzframe.element_by_name('enter_button').disable()
+        self.gzframe.element_by_name('welcome').repeat(500, self.on_face_recognition)
 
     def on_face_recognition(self):
         face_recognized = True
         if face_recognized is True:
-            self.gzframe.element('welcome').cancel(self.on_face_recognition)
+            self.gzframe.element_by_name('welcome').cancel(self.on_face_recognition)
             self.go_to_route('enter_pin')
         elif face_recognized is False:
-            self.gzframe.element('welcome').cancel(self.on_face_recognition)
+            self.gzframe.element_by_name('welcome').cancel(self.on_face_recognition)
             self.go_to_route('no_recognition')
 
     def render(self, props, state):
