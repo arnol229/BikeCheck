@@ -1,15 +1,16 @@
 from framework.gzframe_renderer import GZFrameRenderer
 
-class GZFrameCore:
+class GZFrameNavigation:
 
-    def __init__(self, gzframe, routes):
-        self.gzframe = gzframe
+    def __init__(self, app, routes, current_view, state={}):
+        self.app = app
+        self.state = state
         self.history = []
         self.routes = routes
         self.root_route = self.get_root_route(routes)
-        self.root_component = None
-        self.current_route = None
-        self.current_view = GZFrameRenderer(self.gzframe)
+        self.current_route = self.root_route
+        self.root_component = self.update_root_component(self.root_route, {})
+        self.current_view = current_view
 
     def get_root_route(self, routes):
         root_route = None
@@ -38,19 +39,21 @@ class GZFrameCore:
         if (len(self.history) > 0):
             last_route_name = self.history.pop()
             last_route = self.get_route(last_route_name)
-            self.current_view.destroy()
             self.update_current_view(last_route)
 
     def go_to_route(self, next_route_name, props={}):
         next_route = self.get_route(next_route_name)
         self.history.append(self.current_route['name'])
-        self.current_view.destroy()
-        self.update_current_view(next_route, props)
+        self.update_current_view(next_route)
 
     def update_current_view(self, route, props={}):
+        self.current_view.destroy()
         self.current_route = route
-        self.root_component = self.current_route['component'](self.current_route['name'], props, state=self.gzframe.state)
-        self.current_view.render(self.root_component, self.gzframe.app)
+        self.root_component = self.update_root_component(route, props)
+        self.current_view.render(self.root_component, self.app)
+
+    def update_root_component(self, route, props={}):
+        return self.current_route['component'](self.current_route['name'], props, state=self.state)
 
     def without_keys(self, d, keys):
         return {x: d[x] for x in d if x not in keys}

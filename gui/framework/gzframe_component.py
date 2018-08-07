@@ -12,16 +12,16 @@ class GZFrameComponent(GZFrameElement):
         pass
     
     def go_to_route(self, view):
-        self.gzframe.core.go_to_route(view)
+        self.gzframe.nav.go_to_route(view)
 
     def on_back(self):
-        self.gzframe.core.on_back()
+        self.gzframe.nav.on_back()
 
     def reset_history(self):
-        self.gzframe.core.clear_history()
+        self.gzframe.nav.clear_history()
 
     def is_history_empty(self):
-        return not self.gzframe.core.is_history_empty()
+        return not self.gzframe.nav.is_history_empty()
 
     def render(self, props, state):
         return []
