@@ -11,7 +11,7 @@ class GZFrameRenderer:
     def render(self, current_element, parent, index = 0):
         current_element.index = index
         if current_element.element_type == 'component':
-            current_element.element = Box(parent, **current_element.element_props)
+            current_element.element = Box(parent)
             current_element.gzframe = self.gzframe
             current_element.on_init()
             for child_index, child in enumerate(current_element.children):
@@ -28,6 +28,11 @@ class GZFrameRenderer:
                 current_element.element.when_clicked = current_element.on_click
         
         self.__elements.append(current_element)
+
+    def update(self):
+        pass
+        # for gz_element in reversed(self.__elements):
+        #     element = getattr(gz_element, 'element')
 
     def destroy(self):
         for index, gz_element in enumerate(self.__elements):

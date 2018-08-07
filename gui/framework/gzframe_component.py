@@ -1,12 +1,11 @@
 from framework.gzframe_elements import GZFrameElement, GZFrameElement
 
 class GZFrameComponent(GZFrameElement):
-    def __init__(self, element_name, gzframe = None, props={}, state={}, element_props={}, parent_name = None, element = None, index=0):
+    def __init__(self, element_name, gzframe = None, state={}, element_props={}, parent_name = None, element = None, index=0):
         super().__init__(element_name=element_name, element_type="component", element_props=element_props, parent_name=parent_name, element=element, index=index)
         self.gzframe = gzframe
-        self.props = props
         self.state = state if type(state) is not dict else type('BaseState', (), state)
-        self.children = self.render(props=self.props, state=self.state)
+        self.children = self.render(props=self.element_props, state=self.state)
 
     def on_init(self):
         pass

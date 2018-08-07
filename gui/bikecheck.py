@@ -5,14 +5,6 @@ from components.no_recognition_component import NoRecognitionComponent
 from components.dashboard_component import DashboardComponent
 from components.maintenance_component import MaintenanceComponent
 
-class BikeCheckState:
-    def __init__(self):
-        self.is_authenticated = False
-        self.auth_token = None
-        self.user_id = None
-        self.name = 'Christian'
-        self.is_back_enabled = True
-
 class BikeCheck:
     def __init__(self):
         self.routes = [
@@ -27,7 +19,8 @@ class BikeCheck:
             'width': 800,
             'height': 480
         }
-        self.bikecheck = GZFrame(app_config=self.app_config, routes=self.routes, state=BikeCheckState())
+        self.state = {'is_authenticated': False, 'auth_token': None, 'user_id': None, 'name': 'Christian'}
+        self.bikecheck = GZFrame(app_config=self.app_config, routes=self.routes, state=self.state)
 
 
 app = BikeCheck()

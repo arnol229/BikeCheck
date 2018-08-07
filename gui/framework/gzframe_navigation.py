@@ -2,7 +2,7 @@ from framework.gzframe_renderer import GZFrameRenderer
 
 class GZFrameNavigation:
 
-    def __init__(self, app, routes, view, state={}):
+    def __init__(self, app, routes, view, state):
         self.app = app
         self.state = state
         self.history = []
@@ -44,16 +44,16 @@ class GZFrameNavigation:
     def go_to_route(self, next_route_name, props={}):
         next_route = self.get_route(next_route_name)
         self.history.append(self.current_route['name'])
-        self.update_current_view(next_route)
+        self.update_current_view(next_route, props=props)
 
     def update_current_view(self, route, props={}):
         self.current_view.destroy()
         self.current_route = route
-        self.root_component = self.update_root_component(route, props)
+        self.root_component = self.update_root_component(route, props=props)
         self.current_view.render(self.root_component, self.app)
 
     def update_root_component(self, route, props={}):
-        return self.current_route['component'](self.current_route['name'], props, state=self.state)
+        return self.current_route['component'](self.current_route['name'], element_props=props, state=self.state)
 
     def without_keys(self, d, keys):
         return {x: d[x] for x in d if x not in keys}

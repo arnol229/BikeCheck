@@ -2,8 +2,8 @@ from framework.gzframe_component import GZFrameComponent
 from framework.gzframe_elements import GZFrameButton, GZFrameText, GZFrameContainer
 
 class WelcomeComponent(GZFrameComponent):
-    def __init__(self, element_name, props={}, state={}, element_props={}):
-        super().__init__(element_name, props=props, state=state, element_props=element_props)
+    def __init__(self, element_name, state={}, element_props={}):
+        super().__init__(element_name, state=state, element_props=element_props)
 
     def on_init(self):
         self.reset_history()
