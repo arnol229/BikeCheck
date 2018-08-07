@@ -6,7 +6,7 @@ class GZFrameRenderer:
 
     def __init__(self, gzframe):
         self.gzframe = gzframe
-        self.elements = {}
+        self.__elements = []
 
     def render(self, current_element, parent, index = 0):
         current_element.index = index
@@ -27,18 +27,20 @@ class GZFrameRenderer:
             if not (current_element.on_click is None):
                 current_element.element.when_clicked = current_element.on_click
         
-        self.elements[current_element.element_name] = current_element
+        self.__elements.append(current_element)
 
     def destroy(self):
-        for element_name in self.elements:
+        for index, gz_element in enumerate(self.__elements):
             for g_class in self.gui_classes:
-                element_class = self.elements[element_name]
-                element = getattr(element_class, 'element')
+                element = getattr(gz_element, 'element')
                 if isinstance(element, g_class):
                     element.destroy()
                 element = None
-            self.elements[element_name] = None
-        self.elements = {}
+            self.__elements[index] = None
+        self.__elements = []
 
     def element(self, name):
-        return getattr(self.elements[name], 'element')
+        return getattr(self.component(name), 'element')
+
+    def component(self, name):
+        return next((component for component in self.__elements if component.element_name == name), None)

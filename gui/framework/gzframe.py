@@ -11,8 +11,7 @@ class GZFrame:
         self.view.render(self.nav.root_component, self.app)
 
     def element(self, name):
-        elements = getattr(self.view, 'elements')
-        return getattr(elements[name], 'element')
+        return self.view.element(name)
 
     def on_back(self):
         self.nav.on_back()
