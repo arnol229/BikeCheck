@@ -5,7 +5,7 @@ class GZFrameComponent(GZFrameElement):
         super().__init__(element_name=element_name, element_type="component", props=props, parent_name=parent_name, element=element, index=index)
         self.gzframe = gzframe
         self.state = state
-        self.children = self.render()
+        self.children = self.render(state)
 
     def on_init(self):
         pass
@@ -22,5 +22,5 @@ class GZFrameComponent(GZFrameElement):
     def is_history_empty(self):
         return not self.gzframe.nav.is_history_empty()
 
-    def render(self):
+    def render(self, state):
         return []

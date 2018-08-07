@@ -17,5 +17,5 @@ class BikeListComponent(GZFrameComponent):
             )
         return bike_list
 
-    def render(self):
+    def render(self, state):
         return self.create_list(self.props['bike_list'])

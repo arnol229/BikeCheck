@@ -21,7 +21,7 @@ class WelcomeComponent(GZFrameComponent):
             self.gzframe.element_by_name('welcome').cancel(self.on_face_recognition)
             self.go_to_route('no_recognition')
 
-    def render(self):
+    def render(self, state):
         return [
             GZFrameText(element_name="header_text", props={"text":"Welcome to BikeCheck", "size":40, "font":"Times New Roman", "color":"lightblue"}),
             GZFrameButton(element_name="enter_button", props={"text":"Enter", "command": self.recognize_face}),

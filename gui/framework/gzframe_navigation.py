@@ -2,8 +2,9 @@ from framework.gzframe_renderer import GZFrameRenderer
 
 class GZFrameNavigation:
 
-    def __init__(self, app, routes, view):
+    def __init__(self, app, routes, view, state):
         self.app = app
+        self.state = state
         self.history = []
         self.routes = routes
         self.root_route = self.get_root_route(routes)
@@ -49,7 +50,7 @@ class GZFrameNavigation:
         self.current_view.destroy()
         self.current_route = route
         self.update_current_component_tree(self.current_route, props)
-        self.current_view.render(self.current_view.current_component_tree, self.app)
+        self.current_view.render(self.current_view.current_component_tree, self.app, self.state)
 
     def update_current_component_tree(self, route, props={}):
         self.current_view.update_root_options(

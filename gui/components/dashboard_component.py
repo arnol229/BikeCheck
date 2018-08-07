@@ -16,7 +16,7 @@ class DashboardComponent(GZFrameComponent):
     def to_maintenance(self):
         self.go_to_route('maintenance')
 
-    def render(self):
+    def render(self, state):
         def get_bike_list():
             return {
                 'bike_list': [{

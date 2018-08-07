@@ -5,7 +5,7 @@ class NoRecognitionComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
         super().__init__(element_name, state=state, props=props)
 
-    def render(self):
+    def render(self, state):
         return [
             GZFrameContainer(element_name='app_controls_group', children=[
                 GZFrameButton(element_name='back_button', props={'command': self.on_back, 'text': 'Back'}),

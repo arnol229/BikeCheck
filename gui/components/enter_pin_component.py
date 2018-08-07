@@ -45,8 +45,8 @@ class EnterPinComponent(GZFrameComponent):
         self.gzframe.element_by_name('clear_button').disable()
         self.gzframe.element_by_name('numeric_key_group').enable()
 
-    def render(self):
-        welcome_message = "Welcome {name}".format(name=self.state.name)
+    def render(self, state):
+        welcome_message = "Welcome {name}".format(name=state.name)
         font = 'Times New Roman'
         numeric_keys = []
         for x in range(0,10):
