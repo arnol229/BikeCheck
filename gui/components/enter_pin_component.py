@@ -5,6 +5,9 @@ class EnterPinComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
         super().__init__(element_name, state=state, props=props)
 
+    def gz_on_update(self):
+        print('updated')
+
     def on_pin_entry(self, event_data):
         numeric_key_group = self.gzframe.element_by_name('numeric_key_group')
         validate_button = self.gzframe.element_by_name('validate_button')

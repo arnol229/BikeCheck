@@ -6,7 +6,7 @@ class DashboardComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
         super().__init__(element_name, state=state, props=props)
 
-    def on_init(self):
+    def gz_on_init(self):
         self.reset_history()
 
     def logout(self):
@@ -30,7 +30,7 @@ class DashboardComponent(GZFrameComponent):
         return [
             GZFrameButton(element_name="logout_button", props={"text":"Log Out", "command": self.logout}),
             GZFrameText(element_name="header_text", props={"text":"Available Bikes", "size":30, "font":"Times New Roman", "color":"lightblue"}),
-            BikeListComponent(element_name="bike_list", props=bike_list),
+            BikeListComponent(element_name="bike_list", props=bike_list, state=state),
             GZFrameButton(element_name="checkout_button", props={"text":"Check Out"}),
             GZFrameButton(element_name="maintenance_button", props={"text":"Maintenance", "command": self.to_maintenance})
         ]

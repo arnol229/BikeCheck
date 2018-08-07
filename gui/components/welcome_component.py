@@ -5,7 +5,7 @@ class WelcomeComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
         super().__init__(element_name, state=state, props=props)
 
-    def on_init(self):
+    def gz_on_init(self):
         self.reset_history()
 
     def recognize_face(self):

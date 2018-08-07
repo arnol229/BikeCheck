@@ -7,7 +7,10 @@ class GZFrameComponent(GZFrameElement):
         self.state = state
         self.children = self.render(state)
 
-    def on_init(self):
+    def gz_on_init(self):
+        pass
+
+    def gz_on_change(self):
         pass
     
     def go_to_route(self, view):

@@ -29,7 +29,7 @@ class GZFrameRenderer:
         if current_element.element_type == 'component':
             current_element.element = Box(parent)
             current_element.gzframe = self.gzframe
-            current_element.on_init()
+            current_element.gz_on_init()
             for child_index, child in enumerate(current_element.children):
                 self.render(child, current_element.element, child_index)
         if current_element.element_type == 'box':
