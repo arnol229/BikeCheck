@@ -1,3 +1,5 @@
+from framework.gzframe_renderer import GZFrameRenderer
+
 class GZFrameCore:
 
     def __init__(self, gzframe, routes):
@@ -5,12 +7,9 @@ class GZFrameCore:
         self.history = []
         self.routes = routes
         self.root_route = self.get_root(routes)
+        self.root_component = None
         self.current_route = None
-        self.current_view = None
-
-    def initialize(self):
-        self.current_route = self.root_route
-        self.current_view = self.current_route['controller'](self.gzframe)
+        self.current_view = GZFrameRenderer(self.gzframe)
 
     def get_root(self, routes):
         root_controller = None
@@ -39,27 +38,19 @@ class GZFrameCore:
         if (len(self.history) > 0):
             last_route_name = self.history.pop()
             last_route = self.get_route(last_route_name)
+            self.current_view.destroy()
             self.update_current_view(last_route)
 
-    def go_to_route(self, next_route_name):
+    def go_to_route(self, next_route_name, props={}):
         next_route = self.get_route(next_route_name)
         self.history.append(self.current_route['name'])
-        self.update_current_view(next_route)
+        self.current_view.destroy()
+        self.update_current_view(next_route, props)
 
-    def update_current_view(self, route):
-        self.destroy_current_view()
+    def update_current_view(self, route, props={}):
         self.current_route = route
-        self.current_view = self.current_route['controller'](self.gzframe)
-
-    def destroy_current_view(self):
-        for element_name in self.current_view.view.elements:
-            for g_class in self.current_view.view.gui_classes:
-                element_class = self.current_view.view.elements[element_name]
-                element = getattr(element_class, 'element')
-                if isinstance(element, g_class):
-                    element.destroy()
-                element = None
-            self.current_view.view.elements[element_name] = None
+        self.root_component = self.current_route['component'](self.current_route['name'], props, state=self.gzframe.state)
+        self.current_view.render(self.root_component, self.gzframe.app)
 
     def without_keys(self, d, keys):
         return {x: d[x] for x in d if x not in keys}

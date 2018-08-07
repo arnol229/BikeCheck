@@ -1,16 +1,16 @@
-from framework.gzframe_controller import GZFrameController
-from framework.gzframe_element import GZFrameButton, GZFrameText, GZFrameContainer
+from framework.gzframe_component import GZFrameComponent
+from framework.gzframe_elements import GZFrameButton, GZFrameText, GZFrameContainer
 
-class EnterPinCtrl(GZFrameController):
-    def __init__(self, gzframe):
-        super().__init__(gzframe)
+class EnterPinComponent(GZFrameComponent):
+    def __init__(self, component_name, props={}, state={}, element_props={}):
+        super().__init__(component_name, props=props, state=state, element_props=element_props)
 
     def on_pin_entry(self, event_data):
-        numeric_key_group = self.view.element('numeric_key_group')
-        validate_button = self.view.element('validate_button')
-        clear_button = self.view.element('clear_button')
-        pin_input = self.view.element('pin_input')
-        pin_error = self.view.element('pin_error')
+        numeric_key_group = self.gzframe.element('numeric_key_group')
+        validate_button = self.gzframe.element('validate_button')
+        clear_button = self.gzframe.element('clear_button')
+        pin_input = self.gzframe.element('pin_input')
+        pin_error = self.gzframe.element('pin_error')
         if (numeric_key_group.enabled == True):
             clear_button.enable()
             pin_error.visible = False
@@ -23,8 +23,8 @@ class EnterPinCtrl(GZFrameController):
                 validate_button.enable()
     
     def validate_pin(self):
-        pin_input = self.view.element('pin_input')
-        pin_error = self.view.element('pin_error')
+        pin_input = self.gzframe.element('pin_input')
+        pin_error = self.gzframe.element('pin_error')
         if (pin_input.value != '1111'):
             pin_error.visible = True
             self.reset_form()
@@ -34,15 +34,15 @@ class EnterPinCtrl(GZFrameController):
 
     def clear_pin(self):
         self.reset_form()
-        self.view.element('pin_error').visible = False
+        self.gzframe.element('pin_error').visible = False
 
     def reset_form(self):
-        self.view.element('pin_input').value = ""
-        self.view.element('validate_button').disable()
-        self.view.element('clear_button').disable()
-        self.view.element('numeric_key_group').enable()
+        self.gzframe.element('pin_input').value = ""
+        self.gzframe.element('validate_button').disable()
+        self.gzframe.element('clear_button').disable()
+        self.gzframe.element('numeric_key_group').enable()
 
-    def render(self, state):
+    def render(self, props, state):
         welcome_message = "Welcome {name}".format(name=state.name)
         font = 'Times New Roman'
         numeric_keys = []

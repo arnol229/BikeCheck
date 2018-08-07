@@ -1,9 +1,9 @@
-from framework.gzframe_controller import GZFrameController
-from framework.gzframe_element import GZFrameButton, GZFrameText, GZFrameContainer
+from framework.gzframe_component import GZFrameComponent
+from framework.gzframe_elements import GZFrameButton, GZFrameText, GZFrameContainer
 
-class DashboardCtrl(GZFrameController):
-    def __init__(self, gzframe):
-        super().__init__(gzframe)
+class DashboardComponent(GZFrameComponent):
+    def __init__(self, component_name, props={}, state={}, element_props={}):
+        super().__init__(component_name, props=props, state=state, element_props=element_props)
 
     def on_init(self):
         self.reset_history()
@@ -15,7 +15,7 @@ class DashboardCtrl(GZFrameController):
     def to_maintenance(self):
         self.go_to_route('maintenance')
 
-    def render(self, state):
+    def render(self, props, state):
         def get_available_bikes():
             available_bikes = []
             for x in range(0, 5):

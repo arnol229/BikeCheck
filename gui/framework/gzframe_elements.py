@@ -1,6 +1,6 @@
 class GZFrameElement:
     count = 0
-    def __init__(self, element_name, element_type, element_props = {}, parent_name = None, element = None, index=0):
+    def __init__(self, element_name, element_type = None, element_props = {}, parent_name = None, element = None, index=0):
         self.element_name = element_name
         self.element_type = element_type
         self.element_props = element_props

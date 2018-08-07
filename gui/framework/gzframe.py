@@ -6,7 +6,12 @@ class GZFrame:
         self.app = App(**app_config)
         self.state = state
         self.core = GZFrameCore(self, routes)
-        self.core.initialize()
+        self.core.update_current_view(self.core.root_route)
+
+    def element(self, name):
+        current_view = getattr(self.core, 'current_view')
+        elements = getattr(current_view, 'elements')
+        return getattr(elements[name], 'element')
 
     def run(self):
         self.app.display()

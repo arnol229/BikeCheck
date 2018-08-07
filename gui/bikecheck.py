@@ -1,9 +1,9 @@
 from framework.gzframe import GZFrame
-from controllers.welcome_ctrl import WelcomeCtrl
-from controllers.enter_pin_ctrl import EnterPinCtrl
-from controllers.no_recognition_ctrl import NoRecognitionCtrl
-from controllers.dashboard_ctrl import DashboardCtrl
-from controllers.maintenance_ctrl import MaintenanceCtrl
+from components.welcome_component import WelcomeComponent
+from components.enter_pin_component import EnterPinComponent
+from components.no_recognition_component import NoRecognitionComponent
+from components.dashboard_component import DashboardComponent
+from components.maintenance_component import MaintenanceComponent
 
 class BikeCheckState:
     def __init__(self):
@@ -16,11 +16,11 @@ class BikeCheckState:
 class BikeCheck:
     def __init__(self):
         self.routes = [
-            {'name': 'welcome', 'controller': WelcomeCtrl, 'is_root': True},
-            {'name': 'no_recognition', 'controller': NoRecognitionCtrl},
-            {'name': 'enter_pin', 'controller': EnterPinCtrl},
-            {'name': 'dashboard', 'controller': DashboardCtrl},
-            {'name': 'maintenance', 'controller': MaintenanceCtrl},
+            {'name': 'welcome', 'component': WelcomeComponent, 'is_root': True},
+            {'name': 'no_recognition', 'component': NoRecognitionComponent},
+            {'name': 'enter_pin', 'component': EnterPinComponent},
+            {'name': 'dashboard', 'component': DashboardComponent},
+            {'name': 'maintenance', 'component': MaintenanceComponent},
         ]
         self.app_config = {
             'title': 'Bike Check',
