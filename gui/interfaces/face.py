@@ -29,10 +29,11 @@ class Face(object):
         return (r.status_code  == 200, r.json())
 
 
-    def draw_user(self, user):
+    def find_user(self, user):
         #user == {'dimensions':[2,3,100,100]}
 
         # Draw a rectangle around the faces
         for (x, y, w, h) in user['dimensions']:
             cv2.rectangle(self.frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             self.face = self.frame[y:y+h, x:x+w]
+        return cropped_img

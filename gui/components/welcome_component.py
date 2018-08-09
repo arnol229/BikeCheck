@@ -20,7 +20,7 @@ class WelcomeComponent(GZFrameComponent):
         user_detected, user = face.detect_users()
 
         if user_detected:
-            face.draw_user(user)
+            self.parent.cropped_uiser_img = face.find_user(user)
 
             self.render(PictureElement(face.face))
 
