@@ -50,6 +50,8 @@ class GZFrameRenderer:
         for index, gz_element in enumerate(self.__elements):
             element = getattr(gz_element, 'element')
             if self.is_gui_instance(element):
+                if gz_element.element_type == 'component':
+                    gz_element.gz_on_destroy()
                 element.destroy()
             element = None
             self.__elements[index] = None

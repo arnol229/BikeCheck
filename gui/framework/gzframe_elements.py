@@ -1,3 +1,4 @@
+from framework.gzframe_utils import merge_two_dicts, with_callable, without_callable
 class GZFrameElement:
     count = 0
     def __init__(self, element_name, element_type = None, props = {}, parent_name = None, element = None, index=0):
@@ -19,18 +20,7 @@ class GZFrameElement:
         cls.count = 0
 
     def create_props(self, props):
-        return self.merge_two_dicts(self.with_callable(props), self.without_callable(props))
-
-    def merge_two_dicts(self, x, y):
-        z = x.copy()   # start with x's keys and values
-        z.update(y)    # modifies z with y's keys and values & returns None
-        return z
-
-    def without_callable(self, props):
-        return {x: props[x] for x in props if not callable(props[x])}
-
-    def with_callable(self, props):
-        return {x: props[x] for x in props if callable(props[x])}
+        return merge_two_dicts(with_callable(props), without_callable(props))
 
 class GZFrameContainer(GZFrameElement):
     def __init__(self, children = [], *args, **kwargs):
