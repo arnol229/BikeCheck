@@ -59,7 +59,7 @@ class VerifyComponent(GZFrameComponent):
                 self.go_to_route('dashboard')
             else:
                 print("not authenticated. try again!")
-                self.logout()
+                # self.logout()
 
     def update_name(self):
         self.gzframe.set_state({'name': 'Tom'})
@@ -76,6 +76,9 @@ class VerifyComponent(GZFrameComponent):
         self.gzframe.element_by_name('clear_button').disable()
         self.gzframe.element_by_name('numeric_key_group').enable()
 
+    def test_remove(self):
+        self.gzframe.view.destroy('destroy_text')
+
     def render(self, state):
         welcome_message = "Welcome {name}".format(name=state.name)
         font = 'Times New Roman'
@@ -89,6 +92,10 @@ class VerifyComponent(GZFrameComponent):
             )
 
         return [
+            GZFrameContainer(element_name='destroy_group', children=[
+                GZFrameText(element_name='destroy_text', props={'text': 'To Be Gone', 'size': 40, 'font': font, 'color':'lightblue'}),
+                GZFrameButton(element_name='destroy_button', props={'command': self.test_remove, 'text': 'Destroy Element'}),
+            ]),
             GZFrameText(element_name='header_text', props={'text': welcome_message, 'size': 40, 'font': font, 'color':'lightblue'}),
             GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']}),
             GZFrameContainer(element_name='app_controls_group', children=[

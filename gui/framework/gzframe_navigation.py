@@ -50,7 +50,7 @@ class GZFrameNavigation:
         self.current_view.destroy()
         self.current_route = route
         self.update_current_component_tree(self.current_route, props)
-        self.current_view.render(self.current_view.current_component_tree, self.app, self.state)
+        self.current_view.render(self.current_view.current_component_tree)
 
     def update_current_component_tree(self, route, props={}):
         self.current_view.update_root_options(
