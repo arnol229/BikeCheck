@@ -7,7 +7,7 @@ class GZFrameVirtualView:
         self.view = view
         self.update_mapping = {
             'text': {'text': 'value', 'enabled': 'enabled', 'size': 'text_size', 'color': 'text_color'},
-            'button': {'text': 'text', 'enabled': 'enable', 'size': 'text_size', 'color': 'text_color'}
+            'button': {'text': 'text', 'enabled': 'enabled', 'size': 'text_size', 'color': 'text_color'}
         }
 
     def update_view_on_state_change(self):
@@ -15,7 +15,6 @@ class GZFrameVirtualView:
             self.view.root_options['component'], self.view.root_options['name'], self.view.root_options['props']
         )
         self.update_component_tree(virtual_component_tree, self.view.get_elements())
-        virtual_component_tree = None
         self.app.update()
 
     def update_component_tree(self, current_component, view_elements):
@@ -26,12 +25,14 @@ class GZFrameVirtualView:
                 self.update_component_tree(child, view_elements)
 
     def update_props(self, component, props):
-        component.props = component.create_props(props)
+        component.props = component.merge_two_dicts(component.with_callable(component.props), component.without_callable(props))
         for k, v in props.items():
-            if self.view.is_gui_instance(component.element) and component.element_type in self.update_mapping:
-                element_type = self.update_mapping[component.element_type]
-                if k in element_type:
-                    setattr(component.element, element_type[k], v)
+            if self.view.is_gui_instance(component.element):
+                if component.element_type in self.update_mapping:
+                    element_type = self.update_mapping[component.element_type]
+                    if k in element_type:
+                        setattr(component.element, element_type[k], v)
+
         if component.element_type == 'component':
-            component.gz_on_update()
+            component.gz_on_change()
 

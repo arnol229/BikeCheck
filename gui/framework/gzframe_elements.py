@@ -19,7 +19,7 @@ class GZFrameElement:
         cls.count = 0
 
     def create_props(self, props):
-        return self.merge_two_dicts(self.without_callable(props), self.with_callable(props))
+        return self.merge_two_dicts(self.with_callable(props), self.without_callable(props))
 
     def merge_two_dicts(self, x, y):
         z = x.copy()   # start with x's keys and values
