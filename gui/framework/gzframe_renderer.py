@@ -1,9 +1,8 @@
-
-from guizero import Text, PushButton, Box
+from guizero import Text, PushButton, Box, Picture
 from framework.gzframe_elements import GZFrameElement
 
 class GZFrameRenderer:
-    gui_classes = [Text, PushButton, Box]
+    gui_classes = [Text, PushButton, Box, Picture]
 
     def __init__(self, gzframe, state):
         self.gzframe = gzframe
@@ -42,6 +41,8 @@ class GZFrameRenderer:
             current_element.element = PushButton(parent, **current_element.props)
             if not (current_element.on_click is None):
                 current_element.element.when_clicked = current_element.on_click
+        elif current_element.element_type == 'picture':
+            current_element.element = Picture(parent, **current_element.element_props)
         
         self.__elements.append(current_element)
 

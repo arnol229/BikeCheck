@@ -35,3 +35,11 @@ class GZFrameButton(GZFrameElement):
     def __init__(self, on_click = None, *args, **kwargs):
         super().__init__(element_type = 'button', *args, **kwargs)
         self.on_click = on_click
+
+class GZFramePicture(GZFrameElement):
+    def __init__(self, *args, **kwargs):
+        super().__init__(element_type = 'picture', *args, **kwargs)
+
+    # def show(self):
+    #     print(dir(self))
+    #     self.element.show()

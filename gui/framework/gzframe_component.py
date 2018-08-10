@@ -1,4 +1,4 @@
-from framework.gzframe_elements import GZFrameElement, GZFrameElement
+from framework.gzframe_elements import GZFrameElement
 
 class GZFrameComponent(GZFrameElement):
     def __init__(self, element_name, gzframe = None, state={}, props={}, parent_name = None, element = None, index=0):
