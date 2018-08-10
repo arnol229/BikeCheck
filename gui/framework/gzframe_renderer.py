@@ -1,5 +1,6 @@
 from guizero import Text, PushButton, Box, Picture
 from framework.gzframe_elements import GZFrameElement
+from framework.gzframe_utils import includes
 
 class GZFrameRenderer:
     gui_classes = [Text, PushButton, Box, Picture]
@@ -42,27 +43,30 @@ class GZFrameRenderer:
             if not (current_element.on_click is None):
                 current_element.element.when_clicked = current_element.on_click
         elif current_element.element_type == 'picture':
-            current_element.element = Picture(parent, **current_element.element_props)
+            current_element.element = Picture(parent, **current_element.props)
         
         self.__elements.append(current_element)
 
-    def destroy(self):
-        for index, gz_element in enumerate(self.__elements):
-            element = getattr(gz_element, 'element')
-            if self.is_gui_instance(element):
-                if gz_element.element_type == 'component':
-                    gz_element.gz_on_destroy()
-                element.destroy()
-            element = None
-            self.__elements[index] = None
-        self.__elements = []
-        self.current_component_tree = None
+    def destroy(self, element=None):
+        if element is None:
+            for index, gz_element in enumerate(self.__elements):
+                element = getattr(gz_element, 'element')
+                if self.is_gui_instance(element):
+                    if gz_element.element_type == 'component':
+                        gz_element.gz_on_destroy()
+                    element.destroy()
+                element = None
+                self.__elements[index] = None
+            self.__elements = []
+            self.current_component_tree = None
+        else:
+            pass
 
     def element_by_name(self, name):
         return getattr(self.component(name), 'element')
 
     def is_gui_instance(self, element):
-        return next((True for g_class in self.gui_classes if isinstance(element, g_class)), False)
+        return includes(self.gui_classes, element, isinstance)
 
     def component(self, name):
         return next((component for component in self.__elements if component.element_name == name), None)

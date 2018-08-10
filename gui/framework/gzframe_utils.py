@@ -8,3 +8,15 @@ def without_callable(props):
 
 def with_callable(props):
     return {x: props[x] for x in props if callable(props[x])}
+
+def find(collection, predicate, callback=None, default=None):
+    if callback is None:
+        return next((item for item in collection if predicate == item), default)
+    else:
+        return next((item for item in collection if callback(predicate, item)), default)
+
+def includes(collection, predicate, callback=None):
+    if callback is None:
+        return next((True for item in collection if predicate == item), False)
+    else:
+        return next((True for item in collection if callback(predicate, item)), False)
