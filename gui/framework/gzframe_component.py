@@ -1,13 +1,16 @@
 from framework.gzframe_elements import GZFrameElement
 
 class GZFrameComponent(GZFrameElement):
-    def __init__(self, element_name, gzframe = None, state={}, element_props={}, parent_name = None, element = None, index=0):
-        super().__init__(element_name=element_name, element_type="component", element_props=element_props, parent_name=parent_name, element=element, index=index)
+    def __init__(self, element_name, gzframe = None, state={}, props={}, parent_name = None, element = None, index=0):
+        super().__init__(element_name=element_name, element_type="component", props=props, parent_name=parent_name, element=element, index=index)
         self.gzframe = gzframe
-        self.state = state if type(state) is not dict else type('BaseState', (), state)
-        self.children = self.render(props=self.element_props, state=self.state)
+        self.state = state
+        self.children = self.render(state)
 
-    def on_init(self):
+    def gz_on_init(self):
+        pass
+
+    def gz_on_change(self):
         pass
     
     def go_to_route(self, view):
@@ -22,5 +25,5 @@ class GZFrameComponent(GZFrameElement):
     def is_history_empty(self):
         return not self.gzframe.nav.is_history_empty()
 
-    def render(self, props, state):
+    def render(self, state):
         return []

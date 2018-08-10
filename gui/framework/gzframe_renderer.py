@@ -16,7 +16,7 @@ class GZFrameRenderer:
 
     def create_component_tree(self, component, name, props={}):
         GZFrameElement.reset_count()
-        return component(name, element_props=props, state=self.state)
+        return component(name, props=props, state=self.state)
 
     def update_root_options(self, component, name='root', props={}):
         self.root_options['component'] = component
@@ -28,17 +28,17 @@ class GZFrameRenderer:
         if current_element.element_type == 'component':
             current_element.element = Box(parent)
             current_element.gzframe = self.gzframe
-            current_element.on_init()
+            current_element.gz_on_init()
             for child_index, child in enumerate(current_element.children):
                 self.render(child, current_element.element, child_index)
         if current_element.element_type == 'box':
-            current_element.element = Box(parent, **current_element.element_props)
+            current_element.element = Box(parent, **current_element.props)
             for child_index, child in enumerate(current_element.children):
                 self.render(child, current_element.element, child_index)
         elif current_element.element_type == 'text':
-            current_element.element = Text(parent, **current_element.element_props)
+            current_element.element = Text(parent, **current_element.props)
         elif current_element.element_type == 'button':
-            current_element.element = PushButton(parent, **current_element.element_props)
+            current_element.element = PushButton(parent, **current_element.props)
             if not (current_element.on_click is None):
                 current_element.element.when_clicked = current_element.on_click
         elif current_element.element_type == 'picture':

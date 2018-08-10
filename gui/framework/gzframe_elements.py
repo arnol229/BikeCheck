@@ -1,9 +1,9 @@
 class GZFrameElement:
     count = 0
-    def __init__(self, element_name, element_type = None, element_props = {}, parent_name = None, element = None, index=0):
+    def __init__(self, element_name, element_type = None, props = {}, parent_name = None, element = None, index=0):
         self.element_name = element_name
         self.element_type = element_type
-        self.element_props = self.create_props(element_props)
+        self.props = self.create_props(props)
         self.parent_name = parent_name
         self.element = element
         self.index = index
@@ -18,8 +18,8 @@ class GZFrameElement:
     def reset_count(cls):
         cls.count = 0
 
-    def create_props(self, element_props):
-        return self.merge_two_dicts(self.without_callable(element_props), self.with_callable(element_props))
+    def create_props(self, props):
+        return self.merge_two_dicts(self.with_callable(props), self.without_callable(props))
 
     def merge_two_dicts(self, x, y):
         z = x.copy()   # start with x's keys and values

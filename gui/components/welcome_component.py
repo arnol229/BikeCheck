@@ -6,12 +6,10 @@ from PIL import Image
 import time
 
 class WelcomeComponent(GZFrameComponent):
-    face = None
-    def __init__(self, element_name, state={}, element_props={}):
-        super().__init__(element_name, state=state, element_props=element_props)
-        self.face = None
+    def __init__(self, element_name, state={}, props={}):
+        super().__init__(element_name, state=state, props=props)
 
-    def on_init(self):
+    def gz_on_init(self):
         self.reset_history()
 
     def on_frame(self):
@@ -43,8 +41,14 @@ class WelcomeComponent(GZFrameComponent):
     def go_to_verify(self):
         self.go_to_route('verify')
 
-    def render(self, props, state):
+    def render(self, state):
         return [
+<<<<<<< HEAD
             GZFrameText(element_name="header_text", element_props={"text":"Welcome to BikeCheck", "size":40, "font":"Times New Roman", "color":"lightblue"}),
             GZFrameButton(element_name="enter_button", element_props={"text":"Enter", "command": self.recognize_face}),
         ]
+=======
+            GZFrameText(element_name="header_text", props={"text":"Welcome to BikeCheck", "size":40, "font":"Times New Roman", "color":"lightblue"}),
+            GZFrameButton(element_name="enter_button", props={"text":"Enter", "command": self.recognize_face}),
+        ]
+>>>>>>> ccff6c9e727d955c6e01c7d97b4e9a682568c665
