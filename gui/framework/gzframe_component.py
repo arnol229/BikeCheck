@@ -12,6 +12,9 @@ class GZFrameComponent(GZFrameElement):
 
     def gz_on_change(self):
         pass
+
+    def gz_on_destroy(self):
+        pass
     
     def go_to_route(self, view):
         self.gzframe.nav.go_to_route(view)
