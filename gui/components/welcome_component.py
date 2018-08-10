@@ -32,7 +32,6 @@ class WelcomeComponent(GZFrameComponent):
 
     def recognize_face(self):
         self.gzframe.element_by_name('enter_button').disable()
-        # self.gzframe.element_by_name('welcome').repeat(500, self.on_face_recognition)
         self.face = Face()
         self.face.grab_frame()
         self.element.repeat(200, self.on_frame)
@@ -43,12 +42,6 @@ class WelcomeComponent(GZFrameComponent):
 
     def render(self, state):
         return [
-<<<<<<< HEAD
-            GZFrameText(element_name="header_text", element_props={"text":"Welcome to BikeCheck", "size":40, "font":"Times New Roman", "color":"lightblue"}),
-            GZFrameButton(element_name="enter_button", element_props={"text":"Enter", "command": self.recognize_face}),
-        ]
-=======
             GZFrameText(element_name="header_text", props={"text":"Welcome to BikeCheck", "size":40, "font":"Times New Roman", "color":"lightblue"}),
             GZFrameButton(element_name="enter_button", props={"text":"Enter", "command": self.recognize_face}),
         ]
->>>>>>> ccff6c9e727d955c6e01c7d97b4e9a682568c665
