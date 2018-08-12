@@ -3,7 +3,7 @@ import sys
 import os
 import requests
 
-FACE_URL = 'https://test-crud.azurewebsites.net/detect_face'
+FACE_URL = 'https://test-crud.azurewebsites.net'
 # FACE_URL = 'https://eastus2.api.cognitive.microsoft.com/face/v1.0/detect'
 # FACE_HEADERS = {
 #     'Ocp-Apim-Subscription-Key': '6621c8d910664c85b1cdea82f8e01f31',
@@ -18,6 +18,7 @@ class Face(object):
         self.frame = None
         self.face = None
         self.image_path = image_path
+        self.face_id = None
 
     def grab_frame(self):
         frame = None
@@ -25,15 +26,24 @@ class Face(object):
         frame_detected = frame
         self.frame = frame
         cv2.imwrite(self.image_path, self.frame)
-        # Face.video_capture.release()
 
     def detect_users(self):
-        r = requests.post(FACE_URL, data=open(self.image_path, 'rb').read())#, params=FACE_PARAMS, headers=FACE_HEADERS)
+        detect_resp = requests.post(FACE_URL + "/detect_face", data=open(self.image_path, 'rb').read())#, params=FACE_PARAMS, headers=FACE_HEADERS)
         print('----DETECT FACE----')
-        print(r.status_code)
-        print(r.json())
+        print(detect_resp.status_code)
+        print(detect_resp.json())
         print('-------------------')
-        return (r.status_code  == 200, r.json())
+        if detect_resp.status_code == 200:
+            user_data = detect_resp.json()
+            self.face_id = user_data.get('faceId')
+            print("checking if face is a user")
+            face_resp = requests.post(FACE_URL + "/face_is_user", data={'face_id': self.face_id})
+            f_data = face_resp.json()
+            print('face_resp: ', f_data)
+            if f_data.get('found') == 'true':
+                print("found user! ", {**f_data, **detect_resp.json()})
+                return True, {**f_data, **detect_resp.json()}
+        return False, None
 
     def find_user(self, user):
         print(user)

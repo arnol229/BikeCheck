@@ -4,22 +4,27 @@ import requests
 import asyncio
 import datetime
 
+from interfaces import RFID
 
 AUTH_URL = 'https://test-crud.azurewebsites.net/login'
 
 class VerifyComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
         self.counter = 0
+        print("setting up verify component")
         super().__init__(element_name, state=state, props=props)
+        self.element.repeat(200, self.listen_for_rfid)
+        print("set up complete")
         # self.rfid_listener = await self.listen_for_rfid()
         # print("running rfid listener: ", dir(self.rfid_listener))
 
     def auth_submit(self):
         print('auth submit: ', self.state.auth)
-        if len(self.state.auth) < 2:
+        if len(self.state.auth.keys()) < 2:
             print("not enough auth gathered: ", self.state.auth)
             return
-        resp = requests.post(AUTH_URL, )#, data=self.state.auth['face'], params=self.state.auth['pin'])
+        self.state.auth.get('faceId')
+        resp = requests.post(AUTH_URL, data={}, params={})#, data=self.state.auth['face'], params=self.state.auth['pin'])
         print("----AUTH RESP----")
         print(resp.text)
         print(resp.status_code)
@@ -43,23 +48,17 @@ class VerifyComponent(GZFrameComponent):
                 numeric_key_group.disable()
                 validate_button.enable()
     
-    async def listen_for_rfid(self):
-        while True:
-            self.counter += 1
-            if self.counter == 10:
-                break
-            await asyncio.sleep(2)
-            print("listening for rfid!")
+    def listen_for_rfid(self):
+        print("searching for rfid")
+        user_rfid = RFID.scan()
+        if user_rfid:
+            self.state.auth['rfid'] = user_rfid
+            self.element.cancel(self.listen_for_rfid)
+            self.auth_submit()
 
     def validate_pin(self):
         pin_input = self.gzframe.element_by_name('pin_input')
         self.state.auth['pin'] = pin_input
-        if len(self.state.auth) > 1:
-            if self.auth_submit():
-                self.go_to_route('dashboard')
-            else:
-                print("not authenticated. try again!")
-                # self.logout()
 
     def update_name(self):
         self.gzframe.set_state({'name': 'Tom'})
@@ -67,8 +66,9 @@ class VerifyComponent(GZFrameComponent):
     def clear_pin(self):
         print(dir(self.listen_for_rfid))
         print('counter: ', self.counter)
+        if 'pin' in self.state.auth:
+            del self.state.auth['pin']
         self.reset_form()
-        self.gzframe.element_by_name('pin_error').visible = False
 
     def reset_form(self):
         self.gzframe.element_by_name('pin_input').value = ""
@@ -97,23 +97,25 @@ class VerifyComponent(GZFrameComponent):
                 GZFrameButton(element_name='destroy_button', props={'command': self.test_remove, 'text': 'Destroy Element'}),
             ]),
             GZFrameText(element_name='header_text', props={'text': welcome_message, 'size': 40, 'font': font, 'color':'lightblue'}),
-            GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']}),
+            GZFramePicture(element_name="user_picture", props={'image': self.state.face.face}),
             GZFrameContainer(element_name='app_controls_group', children=[
                 GZFrameButton(element_name='back_button', props={'command': self.on_back, 'text': 'Back'}),
             ]),
-            GZFrameContainer(element_name='pin_dialog', children=[
-                GZFrameText(element_name='pin_text', props={'text': 'Enter your PIN to validate', 'size': 30, 'font': font, 'color':'lightblue'}),
-                GZFrameText(element_name='pin_input', props={'text': '', 'size': 60, 'font': font, 'color':'black'}),
-                GZFrameContainer(element_name='error_box', children=[
-                    GZFrameText(element_name='pin_error', props={'text': 'The pin is invalid', 'visible': False, 'color':'red'}),
-                ]),
-                GZFrameContainer(element_name='control_buttons_group', children=[
-                    GZFrameButton(element_name="validate_button", props={"text":"Validate", "command": self.validate_pin, 'enabled': False, 'grid': [0,0]}),
-                    GZFrameButton(element_name="clear_button", props={"text":"Clear", "command": self.clear_pin, 'enabled': False, 'grid': [1,0]})
-                ], props={'layout': 'grid'}),
-                GZFrameContainer(element_name='numeric_key_group', children=numeric_keys, props={'layout': 'grid'})
-            ], props={'layout': 'auto'}),
-            GZFrameContainer(element_name='rfid_dialog', children=[
-                GZFrameText(element_name='rfid_text', props={'text': 'scan your bike chip', 'size': 30, 'font': font, 'color':'lightblue'}),
+            GZFrameContainer(element_name='verify_container', children=[
+                GZFrameContainer(element_name='pin_dialog', children=[
+                    GZFrameText(element_name='pin_text', props={'text': 'Enter your PIN to validate', 'size': 30, 'font': font, 'color':'lightblue'}),
+                    GZFrameText(element_name='pin_input', props={'text': '', 'size': 60, 'font': font, 'color':'black'}),
+                    GZFrameContainer(element_name='error_box', children=[
+                        GZFrameText(element_name='pin_error', props={'text': 'The pin is invalid', 'visible': False, 'color':'red'}),
+                    ]),
+                    GZFrameContainer(element_name='control_buttons_group', children=[
+                        GZFrameButton(element_name="validate_button", props={"text":"Validate", "command": self.validate_pin, 'enabled': False, 'grid': [0,0]}),
+                        GZFrameButton(element_name="clear_button", props={"text":"Clear", "command": self.clear_pin, 'enabled': False, 'grid': [1,0]})
+                    ], props={'layout': 'grid'}),
+                    GZFrameContainer(element_name='numeric_key_group', children=numeric_keys, props={'layout': 'grid'})
+                ], props={'layout': 'auto'}),
+                GZFrameContainer(element_name='rfid_dialog', children=[
+                    GZFrameButton(element_name='rfid_button', props={'text': 'Scan RFID', "command": self.clear_pin}),
+                ], props={'layout': 'auto'}),
             ], props={'layout': 'auto'}),
         ]
