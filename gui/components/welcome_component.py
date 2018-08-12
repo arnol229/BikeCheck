@@ -13,18 +13,18 @@ class WelcomeComponent(GZFrameComponent):
         self.reset_history()
 
     def on_frame(self):
-        if (self.face.frame is not None):
+        if (self.state.face.frame is not None):
             self.element.cancel(self.on_frame)
-            user_detected, user = self.face.detect_users()
+            user_detected, user = self.state.face.detect_users()
             if type(user) == list:
                 user = user[0]
 
             if user_detected:
-                cropped_user_img = self.face.find_user(user)
+                cropped_user_img = self.state.face.find_user(user)
                 im = Image.fromarray(cropped_user_img)
-                self.state.update_state({'auth': {'face': im}})
-                pic = GZFramePicture(element_name="user_picture", element_props={'image': self.state.auth['face']})
-                text = GZFrameText(element_name="picture_text", element_props={"text":"Welcome {}!".format(user.get('name', 'Associate')), "size":50, "font":"Times New Roman", "color":"black"})
+                self.state.update_state({'auth': {'face_id': user.get('faceId')}})
+                pic = GZFramePicture(element_name="user_picture", props={'image': im})
+                text = GZFrameText(element_name="picture_text", props={"text":"Welcome {}!".format(user.get('name', 'Associate')), "size":50, "font":"Times New Roman", "color":"black"})
                 self.gzframe.view.render(text, parent=self.gzframe.app)
                 self.gzframe.view.render(pic, parent=self.gzframe.app)
                 # pic.element.show()
@@ -32,8 +32,9 @@ class WelcomeComponent(GZFrameComponent):
 
     def recognize_face(self):
         self.gzframe.element_by_name('enter_button').disable()
-        self.face = Face()
-        self.face.grab_frame()
+        if not isinstance(self.state.face, Face):
+            self.state.face = Face()
+        self.state.face.grab_frame()
         self.element.repeat(200, self.on_frame)
         
 

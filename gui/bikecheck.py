@@ -18,7 +18,7 @@ class BikeCheck:
             'width': 800,
             'height': 480
         }
-        self.state = {'auth':{}, 'is_authenticated': False, 'auth_token': None, 'user_id': None, 'name': 'Christian'}
+        self.state = {'face':None, 'auth':{}, 'is_authenticated': False, 'auth_token': None, 'user_id': None, 'name': 'Christian'}
         self.bikecheck = GZFrame(app_config=self.app_config, routes=self.routes, state=self.state)
 
 

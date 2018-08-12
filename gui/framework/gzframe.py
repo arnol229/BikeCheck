@@ -7,6 +7,7 @@ from framework.gzframe_virtual_view import GZFrameVirtualView
 class GZFrame:
     def __init__(self, app_config, routes, state={}):
         self.app = App(**app_config)
+        self.app_config = app_config
         self.state = GZFrameState(state)
         self.view = GZFrameRenderer(self, self.state)
         self.nav = GZFrameNavigation(self.app, routes, self.view, self.state)

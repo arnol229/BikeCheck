@@ -42,7 +42,7 @@ class GZFrameRenderer:
             if not (current_element.on_click is None):
                 current_element.element.when_clicked = current_element.on_click
         elif current_element.element_type == 'picture':
-            current_element.element = Picture(parent, **current_element.element_props)
+            current_element.element = Picture(parent, **current_element.props)
         
         self.__elements.append(current_element)
 
