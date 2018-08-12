@@ -12,7 +12,7 @@ class GZFrame:
         self.view = GZFrameRenderer(self, self.state)
         self.nav = GZFrameNavigation(self.app, routes, self.view, self.state)
         #self.change_detector = GZFrameVirtualView(self.app, self.nav, self.view)
-        self.view.render(self.view.current_component_tree, self.app)
+        self.view.render(self.view.current_component_tree)
 
     def set_state(self, state={}):
         self.state.update_state(state)

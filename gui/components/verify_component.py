@@ -59,7 +59,7 @@ class VerifyComponent(GZFrameComponent):
                 self.go_to_route('dashboard')
             else:
                 print("not authenticated. try again!")
-                self.logout()
+                # self.logout()
 
     def update_name(self):
         self.gzframe.set_state({'name': 'Tom'})
@@ -76,9 +76,8 @@ class VerifyComponent(GZFrameComponent):
         self.gzframe.element_by_name('clear_button').disable()
         self.gzframe.element_by_name('numeric_key_group').enable()
 
-    def on_verify_back(self):
-        self.state.face.frame = None
-        self.on_back()
+    def test_remove(self):
+        self.gzframe.view.destroy('destroy_text')
 
     def render(self, state):
         welcome_message = "Welcome {name}".format(name=state.name)
@@ -93,10 +92,14 @@ class VerifyComponent(GZFrameComponent):
             )
 
         return [
+            GZFrameContainer(element_name='destroy_group', children=[
+                GZFrameText(element_name='destroy_text', props={'text': 'To Be Gone', 'size': 40, 'font': font, 'color':'lightblue'}),
+                GZFrameButton(element_name='destroy_button', props={'command': self.test_remove, 'text': 'Destroy Element'}),
+            ]),
             GZFrameText(element_name='header_text', props={'text': welcome_message, 'size': 40, 'font': font, 'color':'lightblue'}),
-            # GZFramePicture(element_name="user_picture", props={'image': "./current_face.jpg"}),
+            GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']}),
             GZFrameContainer(element_name='app_controls_group', children=[
-                GZFrameButton(element_name='back_button', props={'command': self.on_verify_back, 'text': 'Back'}),
+                GZFrameButton(element_name='back_button', props={'command': self.on_back, 'text': 'Back'}),
             ]),
             GZFrameContainer(element_name='pin_dialog', children=[
                 GZFrameText(element_name='pin_text', props={'text': 'Enter your PIN to validate', 'size': 30, 'font': font, 'color':'lightblue'}),

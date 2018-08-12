@@ -22,11 +22,11 @@ class WelcomeComponent(GZFrameComponent):
             if user_detected:
                 cropped_user_img = self.state.face.find_user(user)
                 im = Image.fromarray(cropped_user_img)
-                self.state.update_state({'auth': {'face_id': user.get('faceId')}})
-                pic = GZFramePicture(element_name="user_picture", props={'image': im})
+                self.state.update_state({'auth': {'face': im}})
+                pic = GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']})
                 text = GZFrameText(element_name="picture_text", props={"text":"Welcome {}!".format(user.get('name', 'Associate')), "size":50, "font":"Times New Roman", "color":"black"})
-                self.gzframe.view.render(text, parent=self.gzframe.app)
-                self.gzframe.view.render(pic, parent=self.gzframe.app)
+                self.gzframe.view.render(text)
+                self.gzframe.view.render(pic)
                 # pic.element.show()
             self.gzframe.app.after(4000, self.go_to_verify)
 

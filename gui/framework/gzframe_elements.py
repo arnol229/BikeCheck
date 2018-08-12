@@ -1,11 +1,13 @@
 from framework.gzframe_utils import merge_two_dicts, with_callable, without_callable
 class GZFrameElement:
     count = 0
-    def __init__(self, element_name, element_type = None, props = {}, parent_name = None, element = None, index=0):
+    def __init__(self, element_name, element_type = None, props = {}, parent = None, element = None, index=0):
         self.element_name = element_name
         self.element_type = element_type
         self.props = self.create_props(props)
-        self.parent_name = parent_name
+        self.parent = parent
+        self.parent_name = ''
+        self.parent_chain = ''
         self.element = element
         self.index = index
         self.id = self.create_id()
