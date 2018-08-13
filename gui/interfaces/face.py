@@ -22,9 +22,8 @@ class Face(object):
 
     def grab_frame(self):
         frame = None
-        ret, frame = Face.video_capture.read()
+        ret, self.frame = Face.video_capture.read()
         frame_detected = frame
-        self.frame = frame
         cv2.imwrite(self.image_path, self.frame)
 
     def detect_users(self):
@@ -35,14 +34,10 @@ class Face(object):
         print('-------------------')
         if detect_resp.status_code == 200:
             user_data = detect_resp.json()
+            if type(user_data) == list:
+                user_data = user_data[0]
             self.face_id = user_data.get('faceId')
-            print("checking if face is a user")
-            face_resp = requests.post(FACE_URL + "/face_is_user", data={'face_id': self.face_id})
-            f_data = face_resp.json()
-            print('face_resp: ', f_data)
-            if f_data.get('found') == 'true':
-                print("found user! ", {**f_data, **detect_resp.json()})
-                return True, {**f_data, **detect_resp.json()}
+            return True, user_data
         return False, None
 
     def find_user(self, user):

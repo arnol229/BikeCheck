@@ -3,8 +3,7 @@ from framework.gzframe_elements import GZFrameButton, GZFrameText, GZFrameContai
 import requests
 import asyncio
 import datetime
-
-from interfaces import RFID
+import json
 
 AUTH_URL = 'https://test-crud.azurewebsites.net/login'
 
@@ -19,7 +18,7 @@ class VerifyComponent(GZFrameComponent):
             print("not enough auth gathered: ", self.state.auth)
             return
         self.state.auth.get('faceId')
-        resp = requests.post(AUTH_URL, data={}, params={})#, data=self.state.auth['face'], params=self.state.auth['pin'])
+        resp = requests.post(AUTH_URL, data=json.dumps(self.state.auth), params={})
         print("----AUTH RESP----")
         print(resp.text)
         print(resp.status_code)
@@ -42,33 +41,21 @@ class VerifyComponent(GZFrameComponent):
             else:
                 numeric_key_group.disable()
                 validate_button.enable()
-    
-    def listen_for_rfid(self):
-        print("searching for rfid")
-        user_rfid = RFID.scan()
-        if user_rfid:
-            self.state.auth['rfid'] = user_rfid
-            self.element.cancel(self.listen_for_rfid)
-            self.auth_submit()
 
     def validate_pin(self):
         pin_input = self.gzframe.element_by_name('pin_input')
         pin_error = self.gzframe.element_by_name('pin_error')
-        self.state.auth['pin'] = pin_input
+        self.state.auth['pin'] = pin_input.value
         if len(self.state.auth) > 1:
             if self.auth_submit():
                 self.go_to_route('dashboard')
             else:
-                pin_error.value = "Not authenticated. Try again!"
-                pin_error.visible = True
-                self.gzframe.element_by_name('pin_input').value = ""
+                self.go_to_route('welcome')
 
     def update_name(self):
         self.gzframe.set_state({'name': 'Tom'})
 
     def clear_pin(self):
-        print(dir(self.listen_for_rfid))
-        print('counter: ', self.counter)
         if 'pin' in self.state.auth:
             del self.state.auth['pin']
         self.reset_form()
@@ -112,14 +99,6 @@ class VerifyComponent(GZFrameComponent):
                     ], props={'layout': 'grid'}),
                 ], props={'grid': [0,1, 4, 1]}, width=800),
 
-                GZFrameContainer(element_name='picture_group', children=[
-                    GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']}, height=200, width=200),
-                ], props={'grid': [0, 2, 1, 1], 'align': 'left'}, bg='blue', width=400),
-
                 GZFrameContainer(element_name='numeric_key_group', children=numeric_keys, props={'layout': 'grid', 'align': 'right', 'grid': [1, 2, 1, 1]}, bg='green', width=400),
-
-                # GZFrameContainer(element_name='rfid_dialog', children=[
-                #     GZFrameText(element_name='rfid_text', props={'text': 'scan your bike chip', 'size': 30, 'font': font, 'color':'lightblue'}),
-                # ], props={'layout': 'auto', 'grid': [0, 2]}),
             ], props={'layout': 'grid'}, width=800)
         ]

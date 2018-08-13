@@ -18,20 +18,22 @@ class WelcomeComponent(GZFrameComponent):
 
     def on_frame(self):
         if (self.state.face.frame is not None):
+            print("finding users and canceling")
             self.user_detected, self.user = self.state.face.detect_users()
             self.element.cancel(self.on_frame)
             self.element.repeat(2000, self.on_user_detected)
+        else:
+            print("state face frame is none")
 
     def on_user_detected(self):
         if self.user_detected is not None:
             self.element.cancel(self.on_user_detected)
-            if type(self.user) == list and len(self.user) > 0:
-                user = self.user[0]
-                cropped_user_img = self.state.face.find_user(user)
+            if self.user:
+                cropped_user_img = self.state.face.find_user(self.user)
                 im = Image.fromarray(cropped_user_img)
-                self.state.update_state({'auth': {'face_id': user.get('face_id')}})
-                pic = GZFramePicture(element_name="user_picture", props={'image': self.state.face.face}, height=200, width=200)
-                text = GZFrameText(element_name="picture_text", props={"text":"Welcome {}!".format(user.get('name', 'Associate')), "size":50, "font":"Times New Roman", "color":"black"})
+                self.state.update_state({'auth': {'face_id': self.user.get('faceId')}})
+                pic = GZFramePicture(element_name="user_picture", props={'image': im}, height=200, width=200)
+                text = GZFrameText(element_name="picture_text", props={"text":"Welcome {}!".format(self.user.get('name', 'Associate')), "size":50, "font":"Times New Roman", "color":"black"})
                 self.gzframe.view.destroy('welcome_group')
                 self.gzframe.view.render(text)
                 self.gzframe.view.render(pic)
