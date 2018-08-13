@@ -7,10 +7,11 @@ import time
 
 class WelcomeComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
-        super().__init__(element_name, state=state, props=props)
+        super().__init__(element_name, state=state, props=props, width=800)
 
     def gz_on_init(self):
         self.reset_history()
+
 
     def on_frame(self):
         if (self.state.face.frame is not None):
@@ -23,8 +24,10 @@ class WelcomeComponent(GZFrameComponent):
                 cropped_user_img = self.state.face.find_user(user)
                 im = Image.fromarray(cropped_user_img)
                 self.state.update_state({'auth': {'face': im}})
-                pic = GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']})
+                pic = GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']}, height=200, width=200)
                 text = GZFrameText(element_name="picture_text", props={"text":"Welcome {}!".format(user.get('name', 'Associate')), "size":50, "font":"Times New Roman", "color":"black"})
+                self.gzframe.view.destroy('header_text')
+                self.gzframe.view.destroy('enter_button')
                 self.gzframe.view.render(text)
                 self.gzframe.view.render(pic)
                 # pic.element.show()
