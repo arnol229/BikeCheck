@@ -19,7 +19,7 @@ class GZFrameNavigation:
                 if route['is_root'] is True:
                     root_route = route
 
-        if not (root_route is None):
+        if root_route is None:
             return routes[0]
         else:
             return root_route

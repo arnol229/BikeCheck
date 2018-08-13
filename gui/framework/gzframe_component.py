@@ -1,8 +1,9 @@
-from framework.gzframe_elements import GZFrameElement
+from framework.gzframe_elements import GZFrameContainer
 
-class GZFrameComponent(GZFrameElement):
-    def __init__(self, element_name, gzframe = None, state={}, props={}, parent= None, element = None, index=0):
-        super().__init__(element_name=element_name, element_type="component", props=props, parent=parent, element=element, index=index)
+class GZFrameComponent(GZFrameContainer):
+    def __init__(self, element_name, gzframe = None, state={}, props={}, parent= None, element = None, width=None, index=0):
+        super().__init__(element_name=element_name, props=props, parent=parent, element=element, width=width, index=index)
+        self.element_type = "component"
         self.gzframe = gzframe
         self.state = state
         self.children = self.render(state)

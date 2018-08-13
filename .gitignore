@@ -1,0 +1,5 @@
+*.pyo
+*.pyc
+__pycache__/
+*.py[cod]
+current_face.jpg

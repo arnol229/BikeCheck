@@ -11,12 +11,7 @@ AUTH_URL = 'https://test-crud.azurewebsites.net/login'
 class VerifyComponent(GZFrameComponent):
     def __init__(self, element_name, state={}, props={}):
         self.counter = 0
-        print("setting up verify component")
-        super().__init__(element_name, state=state, props=props)
-        self.element.repeat(200, self.listen_for_rfid)
-        print("set up complete")
-        # self.rfid_listener = await self.listen_for_rfid()
-        # print("running rfid listener: ", dir(self.rfid_listener))
+        super().__init__(element_name, state=state, props=props, width=800)
 
     def auth_submit(self):
         print('auth submit: ', self.state.auth)
@@ -58,7 +53,15 @@ class VerifyComponent(GZFrameComponent):
 
     def validate_pin(self):
         pin_input = self.gzframe.element_by_name('pin_input')
+        pin_error = self.gzframe.element_by_name('pin_error')
         self.state.auth['pin'] = pin_input
+        if len(self.state.auth) > 1:
+            if self.auth_submit():
+                self.go_to_route('dashboard')
+            else:
+                pin_error.value = "Not authenticated. Try again!"
+                pin_error.visible = True
+                self.gzframe.element_by_name('pin_input').value = ""
 
     def update_name(self):
         self.gzframe.set_state({'name': 'Tom'})
@@ -76,9 +79,6 @@ class VerifyComponent(GZFrameComponent):
         self.gzframe.element_by_name('clear_button').disable()
         self.gzframe.element_by_name('numeric_key_group').enable()
 
-    def test_remove(self):
-        self.gzframe.view.destroy('destroy_text')
-
     def render(self, state):
         welcome_message = "Welcome {name}".format(name=state.name)
         font = 'Times New Roman'
@@ -92,19 +92,17 @@ class VerifyComponent(GZFrameComponent):
             )
 
         return [
-            GZFrameContainer(element_name='destroy_group', children=[
-                GZFrameText(element_name='destroy_text', props={'text': 'To Be Gone', 'size': 40, 'font': font, 'color':'lightblue'}),
-                GZFrameButton(element_name='destroy_button', props={'command': self.test_remove, 'text': 'Destroy Element'}),
-            ]),
-            GZFrameText(element_name='header_text', props={'text': welcome_message, 'size': 40, 'font': font, 'color':'lightblue'}),
-            GZFramePicture(element_name="user_picture", props={'image': self.state.face.face}),
-            GZFrameContainer(element_name='app_controls_group', children=[
-                GZFrameButton(element_name='back_button', props={'command': self.on_back, 'text': 'Back'}),
-            ]),
-            GZFrameContainer(element_name='verify_container', children=[
+            GZFrameContainer(element_name='layout_group', children=[
+                GZFrameContainer(element_name='header_group', children=[
+                    GZFrameContainer(element_name='app_controls_group', children=[
+                        GZFrameButton(element_name='back_button', props={'command': self.on_back, 'text': 'Back'}),
+                    ], props={'grid': [0, 0, 1, 1], 'align': 'left'}),
+                    GZFrameText(element_name='header_text', props={'text': welcome_message, 'size': 40, 'font': font, 'color':'lightblue', 'grid': [1, 0]}),
+                ], props={'grid': [0,0, 4, 1], 'layout': 'grid'}, width=800),
+
                 GZFrameContainer(element_name='pin_dialog', children=[
-                    GZFrameText(element_name='pin_text', props={'text': 'Enter your PIN to validate', 'size': 30, 'font': font, 'color':'lightblue'}),
-                    GZFrameText(element_name='pin_input', props={'text': '', 'size': 60, 'font': font, 'color':'black'}),
+                    GZFrameText(element_name='pin_input', props={'text': '', 'size': 40, 'font': font, 'color':'black'}),
+                    GZFrameText(element_name='pin_text', props={'text': 'Enter your PIN to validate', 'size': 15, 'font': font, 'color':'lightblue'}),
                     GZFrameContainer(element_name='error_box', children=[
                         GZFrameText(element_name='pin_error', props={'text': 'The pin is invalid', 'visible': False, 'color':'red'}),
                     ]),
@@ -112,10 +110,16 @@ class VerifyComponent(GZFrameComponent):
                         GZFrameButton(element_name="validate_button", props={"text":"Validate", "command": self.validate_pin, 'enabled': False, 'grid': [0,0]}),
                         GZFrameButton(element_name="clear_button", props={"text":"Clear", "command": self.clear_pin, 'enabled': False, 'grid': [1,0]})
                     ], props={'layout': 'grid'}),
-                    GZFrameContainer(element_name='numeric_key_group', children=numeric_keys, props={'layout': 'grid'})
-                ], props={'layout': 'auto'}),
-                GZFrameContainer(element_name='rfid_dialog', children=[
-                    GZFrameButton(element_name='rfid_button', props={'text': 'Scan RFID', "command": self.clear_pin}),
-                ], props={'layout': 'auto'}),
-            ], props={'layout': 'auto'}),
+                ], props={'grid': [0,1, 4, 1]}, width=800),
+
+                GZFrameContainer(element_name='picture_group', children=[
+                    GZFramePicture(element_name="user_picture", props={'image': self.state.auth['face']}, height=200, width=200),
+                ], props={'grid': [0, 2, 1, 1], 'align': 'left'}, bg='blue', width=400),
+
+                GZFrameContainer(element_name='numeric_key_group', children=numeric_keys, props={'layout': 'grid', 'align': 'right', 'grid': [1, 2, 1, 1]}, bg='green', width=400),
+
+                # GZFrameContainer(element_name='rfid_dialog', children=[
+                #     GZFrameText(element_name='rfid_text', props={'text': 'scan your bike chip', 'size': 30, 'font': font, 'color':'lightblue'}),
+                # ], props={'layout': 'auto', 'grid': [0, 2]}),
+            ], props={'layout': 'grid'}, width=800)
         ]

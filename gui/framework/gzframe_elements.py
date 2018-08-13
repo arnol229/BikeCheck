@@ -25,8 +25,10 @@ class GZFrameElement:
         return merge_two_dicts(with_callable(props), without_callable(props))
 
 class GZFrameContainer(GZFrameElement):
-    def __init__(self, children = [], *args, **kwargs):
+    def __init__(self, bg='white', width=None, children = [], *args, **kwargs):
         super().__init__(element_type = 'box', *args, **kwargs)
+        self.bg = bg
+        self.width = width
         self.children = children
 
 class GZFrameText(GZFrameElement):
@@ -39,8 +41,10 @@ class GZFrameButton(GZFrameElement):
         self.on_click = on_click
 
 class GZFramePicture(GZFrameElement):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, height=50, width=50, *args, **kwargs):
         super().__init__(element_type = 'picture', *args, **kwargs)
+        self.height = height
+        self.width = width
 
     # def show(self):
     #     print(dir(self))

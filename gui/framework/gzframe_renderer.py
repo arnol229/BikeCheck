@@ -27,26 +27,32 @@ class GZFrameRenderer:
     def render(self, current_component, parent_component=None):
         self.render_node(current_component, parent_component)
 
-    def render_node(self, current_component, parent_component=None, parent_chain='app', index = 0):
+    def render_node(self, current_component, parent_component=None, index = 0):
         if self.name_exists(current_component.element_name):
             raise ValueError('An element with the name "' + current_component.element_name + '" already exists!')
         parent = self.gzframe.app if parent_component is None else parent_component.element
 
         current_component.parent = self.gzframe.app if parent_component is None else parent_component.element
         current_component.parent_name = 'app' if parent_component is None else parent_component.element_name
-        current_component.parent_chain =  parent_chain
+        current_component.parent_chain =  'app' if parent_component is None else parent_component.parent_chain + '>' + parent_component.element_name
         current_component.index = index
 
         if current_component.element_type == 'component':
             current_component.element = Box(parent)
             current_component.gzframe = self.gzframe
+            current_component.element.bg = current_component.bg
+            if current_component.width is not None:
+                current_component.element.width = current_component.width
             current_component.gz_on_init()
             for child_index, child in enumerate(current_component.children):
-                self.render_node(child, current_component, parent_chain=(parent_chain + '>' + current_component.element_name), index=child_index)
+                self.render_node(child, current_component, index=child_index)
         if current_component.element_type == 'box':
             current_component.element = Box(parent, **current_component.props)
+            current_component.element.bg = current_component.bg
+            if current_component.width is not None:
+                current_component.element.width = current_component.width
             for child_index, child in enumerate(current_component.children):
-                self.render_node(child, current_component, parent_chain=(current_component.parent_chain + '>' + current_component.element_name), index=child_index)
+                self.render_node(child, current_component, index=child_index)
         elif current_component.element_type == 'text':
             current_component.element = Text(parent, **current_component.props)
         elif current_component.element_type == 'button':
@@ -55,6 +61,12 @@ class GZFrameRenderer:
                 current_component.element.when_clicked = current_component.on_click
         elif current_component.element_type == 'picture':
             current_component.element = Picture(parent, **current_component.props)
+            current_component.element.height = current_component.height
+            current_component.element.width = current_component.width
+ 
+        if parent_component is not None:
+            if not includes(parent_component.children, current_component):
+                parent_component.children.append(current_component)
         
         self.__elements.append(current_component)
 
